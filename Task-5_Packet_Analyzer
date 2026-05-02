@@ -1,0 +1,38 @@
+from scapy.all import sniff, IP, TCP, UDP, ICMP
+
+def process_packet(packet):
+    if packet.haslayer(IP):
+        ip_layer = packet[IP]
+
+        src_ip = ip_layer.src
+        dst_ip = ip_layer.dst
+        protocol = ip_layer.proto
+
+        print("\n=== Packet Captured ===")
+        print(f"Source IP      : {src_ip}")
+        print(f"Destination IP : {dst_ip}")
+
+        # Identify protocol
+        if packet.haslayer(TCP):
+            print("Protocol       : TCP")
+        elif packet.haslayer(UDP):
+            print("Protocol       : UDP")
+        elif packet.haslayer(ICMP):
+            print("Protocol       : ICMP")
+        else:
+            print(f"Protocol       : Other ({protocol})")
+
+        # Payload (if exists)
+        if packet.payload:
+            print(f"Payload        : {packet.payload}")
+
+def main():
+    print("=" * 50)
+    print("   NETWORK PACKET ANALYZER")
+    print("=" * 50)
+    print("Press Ctrl+C to stop...\n")
+
+    sniff(prn=process_packet, store=False)
+
+if __name__ == "__main__":
+    main()
